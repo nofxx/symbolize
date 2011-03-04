@@ -71,7 +71,8 @@ module Symbolize
           if enum.is_a?(Hash)
             values = enum
           else
-            values = hsh[*enum.map { |v| [v, (configuration[:capitalize] ? v.to_s.capitalize : v.to_s)] }.flatten]
+            values = hsh.new
+            enum.map { |v| [v, (configuration[:capitalize] ? v.to_s.capitalize : v.to_s)] }.each { |k, v| values[k] = v }
           end
 
           # Get the values of :in
