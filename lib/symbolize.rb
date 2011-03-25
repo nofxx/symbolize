@@ -111,7 +111,6 @@ module Symbolize
         end
 
         if validation
-          p "validates_inclusion_of :#{attr_names.join(', :')}, #{configuration.inspect}"
           class_eval "validates_inclusion_of :#{attr_names.join(', :')}, #{configuration.inspect}"
         end
       end
