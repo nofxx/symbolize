@@ -119,7 +119,7 @@ module Symbolize
 
         if default_option
           class_eval("def #{attr_name}; read_and_symbolize_attribute('#{attr_name}') || :#{default_option}; end")
-          class_eval("def #{attr_name}= (value); write_symbolized_attribute('#{attr_name}', (value && !value.empty? ? value : #{default_option})); end")
+          class_eval("def #{attr_name}= (value); write_symbolized_attribute('#{attr_name}', value); end")
           class_eval("def set_default_for_attr_#{attr_name}; self[:#{attr_name}] ||= :#{default_option}; end")
           class_eval("before_save :set_default_for_attr_#{attr_name}")
         else
@@ -161,7 +161,14 @@ module Symbolize
   def write_symbolized_attribute attr_name, value
     val = { "true" => true, "false" => false }[value]
     val = symbolize_attribute(value) if val.nil?
-    self[attr_name] = val
+
+    current_value = self.send(attr_name)
+    if current_value == val
+      current_value
+    else
+      self[attr_name] = val
+      val
+    end
   end
 end
 
