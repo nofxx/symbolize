@@ -68,7 +68,7 @@ describe "Symbolize" do
     it "test_symbolize_symbol" do
       @user.status = :active
       @user.status.should eql(:active)
-      @user.status_before_type_cast.should eql(:active)
+      @user.status_before_type_cast.should eql('active')
       # @user.read_attribute(:status).should eql('active')
     end
 
@@ -317,7 +317,7 @@ describe "Symbolize" do
     #
     #  ActiveRecord <= 2
     #
-    if ActiveRecord::VERSION::MAJOR < 3
+    if ActiveRecord::VERSION::MAJOR <= 2
 
       it "test_symbolized_finder" do
         User.find(:all, :conditions => { :status => :inactive }).map(&:name).should eql(['Bob'])
@@ -327,6 +327,30 @@ describe "Symbolize" do
       it "test_symbolized_with_scope" do
         User.with_scope(:find => { :conditions => { :status => :inactive }}) do
           User.find(:all).map(&:name).should eql(['Bob'])
+        end
+      end
+
+      describe "dirty tracking / changed flag" do
+        before do
+          @anna = User.find_by_name!('Anna')
+        end
+
+        it "is dirty if you change the attribute value" do
+          @anna.language.should == :pt
+          @anna.language_changed?.should be_false
+
+          return_value = @anna.language = :en
+          return_value.should == :en
+          @anna.language_changed?.should be_true
+        end
+
+        it "is not dirty if you set the attribute value to the same value it was originally" do
+          @anna.language.should == :pt
+          @anna.language_changed?.should be_false
+
+          return_value = @anna.language = :pt
+          return_value.should == :pt
+          @anna.language_changed?.should be_false
         end
       end
 
@@ -343,6 +367,30 @@ describe "Symbolize" do
       it "test_symbolized_with_scope" do
         User.with_scope(:find => { :conditions => { :status => :inactive }}) do
           User.find(:all).map(&:name).should eql(['Bob'])
+        end
+      end
+
+      describe "dirty tracking / changed flag" do
+        before do
+          @anna = User.find_by_name!('Anna')
+        end
+
+        it "is dirty if you change the attribute value" do
+          @anna.language.should == :pt
+          @anna.language_changed?.should be_false
+
+          return_value = @anna.language = :en
+          return_value.should == :en
+          @anna.language_changed?.should be_true
+        end
+
+        it "is not dirty if you set the attribute value to the same value it was originally" do
+          @anna.language.should == :pt
+          @anna.language_changed?.should be_false
+
+          return_value = @anna.language = :pt
+          return_value.should == :pt
+          @anna.language_changed?.should be_false
         end
       end
 
