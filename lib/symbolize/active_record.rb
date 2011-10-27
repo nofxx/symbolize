@@ -131,17 +131,15 @@ module Symbolize
 
         if default_option
           class_eval("def #{attr_name}; read_and_symbolize_attribute(#{attr_name.to_s.upcase}_KEYS, '#{attr_name}') || :#{default_option}; end")
-          class_eval("def #{attr_name}= (value); write_symbolized_attribute('#{attr_name}', value); end")
+          class_eval("def #{attr_name}= (value); write_symbolized_attribute('#{attr_name}', #{attr_name.to_s.upcase}_VALUES[value]); end")
           class_eval("def set_default_for_attr_#{attr_name}; self[:#{attr_name}] ||= :#{default_option}; end")
           class_eval("before_save :set_default_for_attr_#{attr_name}")
         else
           class_eval("def #{attr_name}; read_and_symbolize_attribute(#{attr_name.to_s.upcase}_KEYS, '#{attr_name}'); end")
-          class_eval("def #{attr_name}= (value); write_symbolized_attribute('#{attr_name}', value); end")
+          class_eval("def #{attr_name}= (value); write_symbolized_attribute('#{attr_name}', #{attr_name.to_s.upcase}_VALUES[value]); end")
         end
         if i18n
           class_eval("def #{attr_name}_text; read_i18n_attribute(#{attr_name.to_s.upcase}_KEYS, '#{attr_name}'); end")
-        elsif enum
-          class_eval("def #{attr_name}_text; #{attr_name.to_s.upcase}_VALUES[#{attr_name}]; end")
         else
           class_eval("def #{attr_name}_text; #{attr_name}.to_s; end")
         end
@@ -172,8 +170,7 @@ module Symbolize
 
   # Write a symbolized value. Watch out for booleans.
   def write_symbolized_attribute attr_name, value
-    val = { "true" => true, "false" => false }[value]
-    self[attr_name] = val.nil? ? nil : val.to_s
+    self[attr_name] = value.nil? ? nil : value.to_s
   end
 end
 
