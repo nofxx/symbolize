@@ -52,7 +52,7 @@ module Symbolize
       configuration.update(attr_names.extract_options!)
 
       enum = configuration[:in] || configuration[:within]
-      i18n = configuration.delete(:i18n).nil? && !enum.instance_of?(Hash) && enum ? true : configuration[:i18n]
+      i18n = configuration[:i18n].nil? || configuration.delete(:i18n)
       scopes  = configuration.delete :scopes
       methods = configuration.delete :methods
       capitalize = configuration.delete :capitalize
@@ -163,7 +163,7 @@ module Symbolize
   def read_i18n_attribute attr_name
     attr = read_attribute(attr_name)
     return nil if attr.nil?
-    I18n.translate("activerecord.attributes.#{ActiveSupport::Inflector.underscore(self.class)}.enums.#{attr_name}.#{attr}") #.to_sym rescue nila
+    I18n.translate("activerecord.attributes.#{ActiveSupport::Inflector.underscore(self.class)}.enums.#{attr_name}.#{attr}")
   end
 
   # Write a symbolized value. Watch out for booleans.
