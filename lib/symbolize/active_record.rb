@@ -100,7 +100,7 @@ module Symbolize
             scope_comm = lambda { |*args| ActiveRecord::VERSION::MAJOR >= 3 ? scope(*args) : named_scope(*args)}
             values.each do |value|
               if value[0].respond_to?(:to_sym)
-                scope_comm.call value[0].to_sym, :conditions => { attr_name => value[0].to_sym }
+                scope_comm.call value[0].to_sym, :conditions => { attr_name => value[1].to_s }
               elsif ActiveRecord::VERSION::STRING <= "3.0"
                 if value[0] == true || value[0] == false
                   scope_comm.call "with_#{attr_name}".to_sym,    :conditions => { attr_name => '1' }
@@ -115,7 +115,7 @@ module Symbolize
 
           if validation
             validation = "validates_inclusion_of :#{attr_names.join(', :')}"
-            validation += ", :in => #{values.keys.inspect}"
+            validation += ", :in => #{values.values.inspect}"
             validation += ", :allow_nil => true" if configuration[:allow_nil]
             validation += ", :allow_blank => true" if configuration[:allow_blank]
             class_eval validation
@@ -171,7 +171,7 @@ module Symbolize
     val = { "true" => true, "false" => false }[value]
     val = symbolize_attribute(value) if val.nil?
 
-    self[attr_name] = val #.to_s # rails 3.1 fix
+    self[attr_name] = val.to_s
   end
 end
 
