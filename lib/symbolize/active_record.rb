@@ -170,7 +170,7 @@ module Symbolize
 
   # Write a symbolized value. Watch out for booleans.
   def write_symbolized_attribute attr_name, value
-    self[attr_name] = value.nil? ? nil : value.to_s
+    self[attr_name] = value
   end
 end
 
