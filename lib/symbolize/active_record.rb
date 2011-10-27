@@ -66,6 +66,7 @@ module Symbolize
         attr_names.each do |attr_name|
           attr_name = attr_name.to_s
           const =  "#{attr_name}_values"
+          rconst = "#{attr_name}_keys"
           if enum.is_a?(Hash)
             values = enum
           else
@@ -76,8 +77,11 @@ module Symbolize
             end
           end
 
+          keys_by_values = values.each_with_object({}) { |(k, v), h| h[v] = k }
+
           # Get the values of :in
           const_set const.upcase, values unless const_defined? const.upcase
+          const_set rconst.upcase, keys_by_values unless const_defined? rconst.upcase
           ev = if i18n
             # This one is a dropdown helper
             code =  "#{const.upcase}.map { |k,v| [I18n.translate(\"activerecord.attributes.\#{ActiveSupport::Inflector.underscore(self)}.enums.#{attr_name}.\#{k}\"), k] }" #.to_sym rescue nila
@@ -135,7 +139,7 @@ module Symbolize
           class_eval("def #{attr_name}= (value); write_symbolized_attribute('#{attr_name}', value); end")
         end
         if i18n
-          class_eval("def #{attr_name}_text; read_i18n_attribute('#{attr_name}'); end")
+          class_eval("def #{attr_name}_text; read_i18n_attribute(#{attr_name.to_s.upcase}_KEYS, '#{attr_name}'); end")
         elsif enum
           class_eval("def #{attr_name}_text; #{attr_name.to_s.upcase}_VALUES[#{attr_name}]; end")
         else
@@ -160,8 +164,8 @@ module Symbolize
   end
 
   # Return an attribute's i18n
-  def read_i18n_attribute attr_name
-    attr = read_attribute(attr_name)
+  def read_i18n_attribute keys_by_values, attr_name
+    attr = keys_by_values[read_attribute(attr_name)]
     return nil if attr.nil?
     I18n.translate("activerecord.attributes.#{ActiveSupport::Inflector.underscore(self.class)}.enums.#{attr_name}.#{attr}")
   end
