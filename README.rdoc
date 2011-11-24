@@ -33,33 +33,46 @@ On schema DBs, the attribute should be a string (varchar) column.
 
 == Usage
 
+ActiveRecord:
 
     class User < ActiveRecord::Base
-      or Mongoid::Document
 
       symbolize :gender, :in => [:female, :male], :scopes => true
 
-      symbolize :so, :in => {
-        :linux   => "Linux",
-        :mac     => "Mac OS X"
-      }, :scopes => true
+    end
 
-      # Allow blank
-      symbolize :gui,  :in => [:gnome, :kde, :xfce], :allow_blank => true
+Mongoid:
 
-      # Don`t i18n
-      symbolize :browser, :in => [:firefox, :opera], :i18n => false, :methods => true
+    class User
 
-      # Scopes
-      symbolize :angry, :in => [true, false], :scopes => true
+      include Mongoid::Document
+      include Mongoid::Symbolize
 
-      # Don`t validate
-      symbolize :lang, :in => [:ruby, :js, :c, :erlang], :validate => false
-
-      # Default
-      symbolize :kind, :in => [:admin, :manager, :user], :default => :user
+      symbolize :gender, :in => [:female, :male], :scopes => true
 
     end
+
+Other examples:
+
+    symbolize :so, :in => {
+        :linux   => "Linux",
+        :mac     => "Mac OS X"
+    }, :scopes => true
+
+    # Allow blank
+    symbolize :gui,  :in => [:gnome, :kde, :xfce], :allow_blank => true
+
+    # Don`t i18n
+    symbolize :browser, :in => [:firefox, :opera], :i18n => false, :methods => true
+
+    # Scopes
+    symbolize :angry, :in => [true, false], :scopes => true
+
+    # Don`t validate
+    symbolize :lang, :in => [:ruby, :js, :c, :erlang], :validate => false
+
+    # Default
+    symbolize :kind, :in => [:admin, :manager, :user], :default => :user
 
 
 === in/within
