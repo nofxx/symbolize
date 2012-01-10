@@ -101,7 +101,7 @@ module Symbolize
             values.each do |value|
               name = value[0]
               if name.respond_to?(:to_sym)
-                scope_comm.call name.to_sym, :conditions => { attr_name => name }
+                scope_comm.call name.to_sym, :conditions => { attr_name => name.to_s }
                 # Figure out if this as another option, or default...
                 # scope_comm.call "not_#{attr_name}".to_sym, :conditions => { attr_name != name }
               end
