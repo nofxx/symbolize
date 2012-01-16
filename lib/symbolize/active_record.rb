@@ -80,7 +80,7 @@ module Symbolize
           const_set const.upcase, values unless const_defined? const.upcase
           ev = if i18n
             # This one is a dropdown helper
-            code =  "#{const.upcase}.map { |k,v| [I18n.translate(\"activerecord.attributes.\#{ActiveSupport::Inflector.underscore(self)}.enums.#{attr_name}.\#{k}\"), k] }" #.to_sym rescue nila
+            code =  "#{const.upcase}.map { |k,v| [I18n.translate(\"activerecord.attributes.\#{ActiveSupport::Inflector.underscore(self.model_name)}.enums.#{attr_name}.\#{k}\"), k] }" #.to_sym rescue nila
             "def self.get_#{const}; #{code}; end;"
           else
             "def self.get_#{const}; #{const.upcase}.map(&:reverse); end"
@@ -158,7 +158,7 @@ module Symbolize
   def read_i18n_attribute attr_name
     attr = read_attribute(attr_name)
     return nil if attr.nil?
-    I18n.translate("activerecord.attributes.#{ActiveSupport::Inflector.underscore(self.class)}.enums.#{attr_name}.#{attr}") #.to_sym rescue nila
+    I18n.translate("activerecord.attributes.#{ActiveSupport::Inflector.underscore(self.class.model_name)}.enums.#{attr_name}.#{attr}") #.to_sym rescue nila
   end
 
   # Write a symbolized value. Watch out for booleans.
