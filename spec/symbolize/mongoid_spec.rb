@@ -249,6 +249,11 @@ describe "Symbolize" do
         skill.kind_text.should be_nil
       end
 
+      it "should return the proper 'false' i18n if the attr value is false" do
+        person = Person.new(:sex => false)
+        person.sex_text.should == "Masculino"
+      end
+
     end
 
     describe "Methods" do

@@ -130,7 +130,8 @@ module Mongoid
         attr_names.each do |attr_name|
           if i18n # memoize call to translate... good idea?
             define_method "#{attr_name}_text" do
-              return nil unless attr = read_attribute(attr_name)
+              attr = read_attribute(attr_name)
+              return nil if attr.nil?
               I18n.t("mongoid.symbolizes.#{ActiveSupport::Inflector.underscore(self.class.model_name)}.#{attr_name}.#{attr}")
             end
           elsif enum
