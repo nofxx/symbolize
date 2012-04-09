@@ -171,7 +171,7 @@ in new objects automatically. Mongoid only for now.
 
     symbolize :mood, :in => [:happy, :sad, :euphoric], :default => (MarvinDay ? :sad : :happy)
 
-    User.new.kind # It may print :happy
+    User.new.mood # It may print :happy
 
 
 == Rails Form Example
