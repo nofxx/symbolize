@@ -16,6 +16,7 @@ class User < ActiveRecord::Base
   symbolize :gui, :allow_blank => true, :in => [:cocoa, :qt, :gtk], :i18n => false
   symbolize :karma, :in => %w{ good bad ugly}, :methods => true, :i18n => false, :allow_nil => true
   symbolize :cool, :in => [true, false], :scopes => true
+  symbolize :color, :in => [:red, :green, :blue], :default => :red, :methods => true
 
   has_many :extras, :dependent => :destroy, :class_name => "UserExtra"
   has_many :access, :dependent => :destroy, :class_name => "UserAccess"
@@ -60,6 +61,13 @@ describe "Symbolize" do
     u.errors.messages.should eql({})
     u.status.should eql(:active)
     u.should be_active
+  end
+  
+  describe "User non-persisted" do
+    it "should work with methods with default value" do
+      @user = User.new
+      @user.should be_red
+    end
   end
 
   describe "User Instantiated" do
