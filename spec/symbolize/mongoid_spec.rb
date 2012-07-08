@@ -131,6 +131,10 @@ describe "Symbolize" do
       Person::STATUS_VALUES.should eql({ inactive: "Inactive", active: "Active"})
     end
 
+    it "should get the values for RailsAdmin" do
+      person.status_enum.should eql([["Active", :active],["Inactive", :inactive]])
+    end
+
     it "should have a human _text method" do
       person.status_text.should eql("Active")
     end
