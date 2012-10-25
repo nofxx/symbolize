@@ -17,6 +17,9 @@ class User < ActiveRecord::Base
   symbolize :karma, :in => %w{ good bad ugly}, :methods => true, :i18n => false, :allow_nil => true
   symbolize :cool, :in => [true, false], :scopes => true
 
+  symbolize :role, :in => [:reader, :writer, :some_existing_attr], :i18n => false, :methods => true, :default => :reader
+  symbolize :country, :in => [:us, :gb, :pt, :ru], :capitalize => true, :i18n => false  # note: the default value is provided in db migration
+
   has_many :extras, :dependent => :destroy, :class_name => "UserExtra"
   has_many :access, :dependent => :destroy, :class_name => "UserAccess"
 end
@@ -351,6 +354,58 @@ describe "Symbolize" do
     # it "should have 'not_attr_name' helper" do
     #   User.not_cool.should == [@bob]
     # end
+
+  end
+
+
+  describe ": Default Value" do
+    before(:each) do
+      @user = User.new(:name => 'Anna', :other => :fo, :status => :active  , :so => :linux, :gui => :qt, :language => :pt, :sex => true, :cool => true)
+    end
+
+    it "should be considered during validation" do
+      @user.valid?
+      @user.errors.full_messages.should == []
+    end
+
+    it "should be taken from the DB schema definition" do
+      @user.country.should == :pt
+      @user.country_text.should == "Pt"
+    end
+
+    it "should be applied to new, just saved, and reloaded objects, and also play fine with :methods option" do
+      @user.role.should == :reader
+      @user.role_text.should == "reader"
+      @user.should be_reader
+      @user.save!
+      @user.role.should == :reader
+      @user.should be_reader
+      @user.reload
+      @user.role.should == :reader
+      @user.should be_reader
+    end
+
+    it "should be overridable" do
+      @user.role = :writer
+      @user.role.should == :writer
+      @user.should be_writer
+      @user.save!
+      @user.role.should == :writer
+      @user.should be_writer
+      @user.reload
+      @user.role.should == :writer
+      @user.should be_writer
+    end
+
+    # This feature is for the next major version (b/o the compatibility problem)
+    pending "should detect name collision caused by ':methods => true' option" do
+      lambda {
+        User.class_eval do
+          # 'reader?' method is already defined, so the line below should raise an error
+          symbolize :some_attr, :in => [:reader, :guest], :methods => true
+        end
+      }.should raise_error(ArgumentError)
+    end
 
   end
 end

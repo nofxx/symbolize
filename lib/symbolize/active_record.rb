@@ -89,8 +89,16 @@ module Symbolize
           if methods
             values.each do |value|
               key = value[0]
+
+              # It's a good idea to test for name collisions here and raise exceptions.
+              # However, the existing software with this kind of errors will start crashing,
+              # so I'd postpone this improvement until the next major version
+              # this way it will not affect those people who use ~> in their Gemfiles
+
+              # raise ArgumentError, "re-defined #{key}? method of #{self.name} class due to 'symbolize'" if method_defined?("#{key}?")
+
               define_method("#{key}?") do
-                self[attr_name].to_s == key.to_s
+                self.send(attr_name) == key.to_sym
               end
             end
           end

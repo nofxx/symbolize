@@ -8,6 +8,9 @@ class CreateTestingStructure < ActiveRecord::Migration
       t.boolean :sex
       t.boolean :public
       t.boolean :cool
+      t.string :role
+      t.string :country, :default => "pt"
+      t.string :some_attr  # used in name collision tests
     end
     create_table :user_skills do |t|
       t.references :user
