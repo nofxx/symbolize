@@ -96,6 +96,7 @@ module Mongoid
                    "def self.get_#{const}; #{const.upcase}.map(&:reverse); end"
                  end
             class_eval(ev)
+            class_eval "def #{attr_name}_enum; self.class.get_#{const}; end"
 
             if methods
               values.each do |value|
