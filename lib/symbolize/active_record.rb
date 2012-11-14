@@ -51,7 +51,8 @@ module Symbolize
       configuration.update(attr_names.extract_options!)
 
       enum = configuration[:in] || configuration[:within]
-      i18n = configuration.delete(:i18n) || (!enum.instance_of?(Hash) && enum)
+      i18n = configuration.delete(:i18n)
+      i18n = (!enum.instance_of?(Hash) && enum) if i18n.nil?
       scopes  = configuration.delete :scopes
       methods = configuration.delete :methods
       capitalize = configuration.delete :capitalize
