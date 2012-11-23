@@ -26,5 +26,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency("bson_ext", ["~> 1.5.0"])
   s.add_development_dependency("sqlite3", ["~> 1.3.0"])
   s.add_development_dependency("pg", ["~> 0.12.2"])
-  s.add_development_dependency("activerecord", ["~> 3.1.0"])
+  s.add_development_dependency("activerecord", [">= 3.1.0", "< 5"])
 end

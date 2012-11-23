@@ -11,15 +11,9 @@ and can be set using :symbols or "strings".
     gem install symbolize
 
 
-=== Mongoid
+=== Gemfile
 
-    gem "symbolize", :require => "symbolize/mongoid"
-
-
-=== ActiveRecord
-
-    gem "symbolize", :require => "symbolize/active_record"
-
+    gem "symbolize"
 
 
 == About
@@ -42,8 +36,17 @@ ActiveRecord:
 
 Mongoid:
 
+    require 'symbolize/mongoid'
+
     class Contact
       include Mongoid::Symbolize
+
+      symbolize :kind, :in => [:im, :mobile, :email], :scopes => true
+
+or just
+
+    class Contact
+      include Symbolize::Mongoid
 
       symbolize :kind, :in => [:im, :mobile, :email], :scopes => true
 

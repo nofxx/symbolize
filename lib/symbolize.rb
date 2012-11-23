@@ -1,6 +1,7 @@
 module Symbolize
-  # Require a specific adapter
-  # symbolize/mongoid
-  # symbolize/active_record
-
+  autoload :ActiveRecord, 'symbolize/active_record'
+  autoload :Mongoid, 'symbolize/mongoid'
 end
+
+require 'symbolize/railtie' if defined? Rails
+

@@ -55,67 +55,66 @@ describe "Symbolize" do
   it "should have a valid blueprint" do
     # Test records
     u = User.create(:name => 'Bob' , :other => :bar,:status => :inactive, :so => :mac, :gui => :gtk, :language => :en, :sex => false, :cool => false)
-    u.errors.messages.should eql({})
+    u.errors.messages.should be_blank
   end
 
   it "should work nice with default values from active model" do
     u = User.create(:name => 'Niu' , :other => :bar, :so => :mac, :gui => :gtk, :language => :en, :sex => false, :cool => false)
-    u.errors.messages.should eql({})
+    u.errors.messages.should be_blank
     u.status.should eql(:active)
     u.should be_active
   end
 
   describe "User Instantiated" do
-    before(:each) do
-      @user = User.create(:name => 'Anna', :other => :fo, :status => :active  , :so => :linux, :gui => :qt, :language => :pt, :sex => true, :cool => true)
-    end
+    subject {
+      User.create(:name => 'Anna', :other => :fo, :status => status, :so => so, :gui => :qt, :language => :pt, :sex => true, :cool => true)
+    }
+    let(:status) { :active }
+    let(:so) { :linux }
 
-    it "test_symbolize_string" do
-      @user.status = 'inactive'
-      @user.status.should eql(:inactive)
+    describe "test_symbolize_string" do
+      let(:status) { 'inactive' }
+      its(:status) { should == :inactive }
       #      @user.status_before_type_cast.should eql(:inactive)
       # @user.read_attribute(:status).should eql('inactive')
     end
 
-    it "test_symbolize_symbol" do
-      @user.status = :active
-      @user.status.should eql(:active)
-      @user.status_before_type_cast.should eql(:active)
+    describe "test_symbolize_symbol" do
+      its(:status) { should == :active }
+      its(:status_before_type_cast) { should == :active }
       # @user.read_attribute(:status).should eql('active')
     end
 
-    it "should work nice with numbers" do
-      @user.status = 43
-      @user.status.should_not be_nil
+    describe "should work nice with numbers" do
+      let(:status) { 43 }
+      its(:status) { should be_present }
       # @user.status_before_type_cast.should be_nil
       # @user.read_attribute(:status).should be_nil
     end
 
-    it "should acts nice with nil" do
-      @user.status = nil
-      @user.status.should be_nil
-      @user.status_before_type_cast.should be_nil
-      @user.read_attribute(:status).should be_nil
+    describe "should acts nice with nil" do
+      let(:status) { nil }
+      its(:status) { should be_nil }
+      its(:status_before_type_cast) { should be_nil }
+      it { subject.read_attribute(:status).should be_nil }
     end
 
-    it "should acts nice with blank" do
-      @user.status = ""
-      @user.status.should be_nil
-      @user.status_before_type_cast.should be_nil
-      @user.read_attribute(:status).should be_nil
+    describe "should acts nice with blank" do
+      let(:status) { "" }
+      its(:status) { should be_nil }
+      its(:status_before_type_cast) { should be_nil }
+      it { subject.read_attribute(:status).should be_nil }
     end
 
-    it "test_symbols_quoted_id" do
-      pending
-      @user.status = :active
-      @user.status.quoted_id.should eql("'active'")
+    describe "test_symbols_quoted_id" do
+      pending { subject.status.quoted_id.should eql("'active'") }
     end
 
     it "should not validates other" do
-      @user.other = nil
-      @user.should be_valid
-      @user.other = ""
-      @user.should be_valid
+      subject.other = nil
+      subject.should be_valid
+      subject.other = ""
+      subject.should be_valid
     end
 
     it "should get the correct values" do
@@ -123,8 +122,8 @@ describe "Symbolize" do
       User::STATUS_VALUES.should eql({:inactive=>"Inactive", :active=>"Active"})
     end
 
-    it "test_symbolize_humanize" do
-      @user.status_text.should eql("Active")
+    describe "test_symbolize_humanize" do
+      its(:status_text) { should eql("Active") }
     end
 
     it "should get the correct values" do
@@ -132,8 +131,8 @@ describe "Symbolize" do
       User::GUI_VALUES.should eql({:cocoa=>"cocoa", :qt=>"qt", :gtk=>"gtk"})
     end
 
-    it "test_symbolize_humanize" do
-      @user.gui_text.should eql("qt")
+    describe "test_symbolize_humanize" do
+      its(:gui_text) { should eql("qt") }
     end
 
     it "should get the correct values" do
@@ -141,58 +140,58 @@ describe "Symbolize" do
       User::SO_VALUES.should eql({:linux => "Linux", :mac => "Mac OS X", :win => "Videogame"})
     end
 
-    it "test_symbolize_humanize" do
-      @user.so_text.should eql("Linux")
+    describe "test_symbolize_humanize" do
+      its(:so_text) { should eql("Linux") }
     end
 
-    it "test_symbolize_humanize" do
-      @user.so = :mac
-      @user.so_text.should eql("Mac OS X")
+    describe "test_symbolize_humanize" do
+      let(:so) { :mac }
+      its(:so_text) { should eql("Mac OS X") }
     end
 
     it "should stringify" do
-      @user.other_text.should eql("fo")
-      @user.other = :foo
-      @user.other_text.should eql("foo")
+      subject.other_text.should eql("fo")
+      subject.other = :foo
+      subject.other_text.should eql("foo")
     end
 
-    it "should validate status" do
-      @user.status = nil
-      @user.should_not be_valid
-      @user.should have(1).errors
+    describe "should validate status" do
+      let(:status) { nil }
+      it { should_not be_valid }
+      it { should have(1).errors }
     end
 
     it "should not validate so" do
-      @user.so = nil
-      @user.should be_valid
+      subject.so = nil
+      subject.should be_valid
     end
 
     it "test_symbols_with_weird_chars_quoted_id" do
-      @user.status = :"weird'; chars"
-      @user.status_before_type_cast.should eql(:"weird'; chars")
+      subject.status = :"weird'; chars"
+      subject.status_before_type_cast.should eql(:"weird'; chars")
       #    assert_equal "weird'; chars", @user.read_attribute(:status)
       #   assert_equal "'weird''; chars'", @user.status.quoted_id
     end
 
     it "should work fine through relations" do
-      @user.extras.create(:key => :one)
+      subject.extras.create(:key => :one)
       UserExtra.first.key.should eql(:one)
     end
 
     it "should play fine with null db columns" do
-      new_extra = @user.extras.build
+      new_extra = subject.extras.build
       new_extra.should_not be_valid
     end
 
     it "should play fine with null db columns" do
-      new_extra = @user.extras.build
+      new_extra = subject.extras.build
       new_extra.should_not be_valid
     end
 
     describe "i18n" do
 
       it "should test i18n ones" do
-        @user.language_text.should eql("Português")
+        subject.language_text.should eql("Português")
       end
 
       it "should get the correct values" do
@@ -204,9 +203,9 @@ describe "Symbolize" do
       end
 
       it "should test boolean" do
-        @user.sex_text.should eql("Feminino")
-        @user.sex = false
-        @user.sex_text.should eql('Masculino')
+        subject.sex_text.should eql("Feminino")
+        subject.sex = false
+        subject.sex_text.should eql('Masculino')
       end
 
       it "should get the correct values" do
@@ -232,20 +231,20 @@ describe "Symbolize" do
     describe "Methods" do
 
       it "should play nice with other stuff" do
-        @user.karma.should be_nil
+        subject.karma.should be_nil
         User::KARMA_VALUES.should eql({:bad => "bad", :ugly => "ugly", :good => "good"})
       end
 
       it "should provide a boolean method" do
-        @user.should_not be_good
-        @user.karma = :ugly
-        @user.should be_ugly
+        subject.should_not be_good
+        subject.karma = :ugly
+        subject.should be_ugly
       end
 
       it "should work" do
-        @user.karma = "good"
-        @user.should be_good
-        @user.should_not be_bad
+        subject.karma = "good"
+        subject.should be_good
+        subject.should_not be_bad
       end
 
     end
@@ -253,21 +252,21 @@ describe "Symbolize" do
     describe "Methods" do
 
       it "is dirty if you change the attribute value" do
-        @user.language.should == :pt
-        @user.language_changed?.should be_false
+        subject.language.should == :pt
+        subject.language_changed?.should be_false
 
-        return_value = @user.language = :en
+        return_value = subject.language = :en
         return_value.should == :en
-        @user.language_changed?.should be_true
+        subject.language_changed?.should be_true
       end
 
       it "is not dirty if you set the attribute value to the same value" do
-        @user.language.should == :pt
-        @user.language_changed?.should be_false
+        subject.language.should == :pt
+        subject.language_changed?.should be_false
 
-        return_value = @user.language = :pt
+        return_value = subject.language = :pt
           return_value.should == :pt
-        @user.language_changed?.should be_false
+        subject.language_changed?.should be_false
       end
 
     end
