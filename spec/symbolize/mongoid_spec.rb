@@ -30,12 +30,6 @@ class Person
   embeds_many :skills, :class_name => "PersonSkill"
 end
 
-class User
-  include Mongoid::Document
-  include Mongoid::Symbolize
-  symbolize :gender, :in => [:female, :male]
-end
-
 class PersonSkill
   include Mongoid::Document
   include Mongoid::Symbolize
@@ -136,6 +130,10 @@ describe "Symbolize" do
     it "should get the correct values" do
       Person.get_status_values.should eql([["Active", :active],["Inactive", :inactive]])
       Person::STATUS_VALUES.should eql({ inactive: "Inactive", active: "Active"})
+    end
+
+    it "should get the values for RailsAdmin" do
+      Person.status_enum.should eql([["Active", :active],["Inactive", :inactive]])
     end
 
     it "should have a human _text method" do
@@ -380,15 +378,7 @@ describe "Symbolize" do
         @anna.language_changed?.should be_false
       end
 
-      it "should not create changes" do
-        User.create!(gender: :female)
-        user = User.last
-        user.gender = :female
-        user.changes.should eql({})
-      end
-
     end
-
 
   end
 

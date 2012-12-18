@@ -55,7 +55,7 @@ module Mongoid
 
         enum = configuration[:in] || configuration[:within]
         i18n = configuration.delete(:i18n)
-        i18n = (!enum.instance_of?(Hash) && enum) if i18n.nl?
+        i18n = (!enum.instance_of?(Hash) && enum) if i18n.nil?
         scopes      = configuration.delete :scopes
         methods     = configuration.delete :methods
         capitalize  = configuration.delete :capitalize
@@ -97,6 +97,7 @@ module Mongoid
                    "def self.get_#{const}; #{const.upcase}.map(&:reverse); end"
                  end
             class_eval(ev)
+            class_eval "def self.#{attr_name}_enum; self.get_#{const}; end"
 
             if methods
               values.each do |value|

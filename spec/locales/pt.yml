@@ -2,6 +2,16 @@ pt:
   activerecord:
     symbolizes:
       user:
+        role: reader
+        status:
+          active: Active
+          inactive: Inactive
+        gui:
+          cocoa: cocoa
+          gtk: gtk
+          qt: qt
+        country:
+          pt: Pt
         language:
           pt: Português
           en: Inglês

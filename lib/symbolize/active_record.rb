@@ -86,6 +86,7 @@ module Symbolize::ActiveRecord
             "def self.get_#{const}; #{const.upcase}.map(&:reverse); end"
           end
           class_eval(ev)
+          class_eval "def self.#{attr_name}_enum; self.get_#{const}; end"
 
           if methods
             values.each do |value|
@@ -164,8 +165,8 @@ module Symbolize::ActiveRecord
   # Return an attribute's i18n
   def read_i18n_attribute attr_name
     attr = read_attribute(attr_name)
-    return nil if attr.nil?
-    I18n.translate("activerecord.symbolizes.#{self.class.model_name.underscore}.#{attr_name}.#{attr}") #.to_sym rescue nila
+    t = I18n.translate("activerecord.symbolizes.#{self.class.model_name.underscore}.#{attr_name}.#{attr}") #.to_sym rescue nila
+    t.is_a?(Hash) ? nil : t
   end
 
   # Write a symbolized value. Watch out for booleans.
