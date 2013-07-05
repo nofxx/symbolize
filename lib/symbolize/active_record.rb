@@ -110,7 +110,7 @@ module Symbolize::ActiveRecord
               values.each do |value|
                 name = value[0]
                 if name.respond_to?(:to_sym)
-                  scope name.to_sym, where(attr_name => name.to_s)
+                  scope name.to_sym, -> { where(attr_name => name.to_s) }
                   # Figure out if this as another option, or default...
                   # scope_comm.call "not_#{attr_name}".to_sym, :conditions => { attr_name != name }
                 end

@@ -111,7 +111,7 @@ module Mongoid
               if scopes == :shallow
                 values.each do |k, v|
                   if k.respond_to?(:to_sym)
-                    scope k.to_sym, where({ attr_name => k })
+                    scope k.to_sym, -> { where(attr_name => k) }
                   end
                 end
               else # scoped scopes
