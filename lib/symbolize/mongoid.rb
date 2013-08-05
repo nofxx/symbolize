@@ -138,7 +138,7 @@ module Mongoid
             define_method "#{attr_name}_text" do
               attr = read_attribute(attr_name)
               return nil if attr.nil?
-              I18n.t("mongoid.symbolizes.#{self.class.model_name.underscore}.#{attr_name}.#{attr}")
+              I18n.t("mongoid.symbolizes.#{self.class.model_name.to_s.underscore}.#{attr_name}.#{attr}")
             end
           elsif enum
             class_eval("def #{attr_name}_text; #{attr_name.to_s.upcase}_VALUES[#{attr_name}]; end")

@@ -18,6 +18,6 @@ Gem::Specification.new do |s|
   s.require_path = "lib"
 
   s.rubygems_version = "1.3.7"
-  s.add_dependency("activesupport", ["~> 3.2"])
-  s.add_dependency("activemodel", ["~> 3.2"])
+  s.add_dependency 'activesupport', '>= 3.2', '< 5'
+  s.add_dependency 'activemodel', '>= 3.2', '< 5'
 end

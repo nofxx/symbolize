@@ -169,7 +169,7 @@ module Symbolize::ActiveRecord
   # Return an attribute's i18n
   def read_i18n_attribute attr_name
     attr = read_attribute(attr_name)
-    t = I18n.translate("activerecord.symbolizes.#{self.class.model_name.underscore}.#{attr_name}.#{attr}") #.to_sym rescue nila
+    t = I18n.translate("activerecord.symbolizes.#{self.class.model_name.to_s.underscore}.#{attr_name}.#{attr}") #.to_sym rescue nila
     t.is_a?(Hash) ? nil : t
   end
 
