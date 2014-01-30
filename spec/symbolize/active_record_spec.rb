@@ -38,6 +38,10 @@ class Permission < ActiveRecord::Base
   symbolize :lvl, :in => (1..9).to_a, :i18n => false#, :default => 1
 end
 
+class PermissionSubclass < Permission
+  symbolize :sub_lvl
+end
+
 # Make with_scope public-usable for testing
 #if ActiveRecord::VERSION::MAJOR < 3
 class << ActiveRecord::Base
@@ -63,6 +67,14 @@ describe "Symbolize" do
     u.errors.messages.should be_blank
     u.status.should eql(:active)
     u.should be_active
+  end
+
+  describe ".symbolized_attributes" do
+    it "returns the symbolized attribute for the class" do
+      UserExtra.symbolized_attributes.should eq ['key']
+      Permission.symbolized_attributes.should match_array ['kind', 'lvl']
+      PermissionSubclass.symbolized_attributes.should match_array ['kind', 'lvl', 'sub_lvl']
+    end
   end
 
   describe "User Instantiated" do
@@ -281,6 +293,23 @@ describe "Symbolize" do
         subject.language_changed?.should be_false
       end
 
+      it "is not dirty if you set the default attribute value to the same value" do
+        user = User.create!(:language => :pt, :sex => true, :cool => true)
+        user.status.should == :active
+        user.should_not be_changed
+
+        user.status = :active
+        user.should_not be_changed
+      end
+
+      it "is not dirty if you set the default attribute value to the same value (string)" do
+        user = User.create!(:language => :pt, :sex => true, :cool => true)
+        user.status.should == :active
+        user.should_not be_changed
+
+        user.status = 'active'
+        user.should_not be_changed
+      end
     end
 
   end
