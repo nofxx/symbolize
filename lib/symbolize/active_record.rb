@@ -71,7 +71,6 @@ module Symbolize::ActiveRecord
 
         attr_names.each do |attr_name|
           attr_name = attr_name.to_s
-          symbolized_attributes << attr_name
           const =  "#{attr_name}_values"
           if enum.is_a?(Hash)
             values = enum
@@ -156,6 +155,10 @@ module Symbolize::ActiveRecord
           class_eval("def #{attr_name}_text; #{attr_name}.to_s; end")
         end
       end
+
+      # merge new symbolized attribute and create a new array to ensure that each class in inheritance hierarchy
+      # has its own array of symbolized attributes
+      self.symbolized_attributes =  self.symbolized_attributes + attr_names.map(&:to_s)
     end
 
     # Hook used by Rails to do extra stuff to attributes when they are initialized.
