@@ -281,6 +281,23 @@ describe "Symbolize" do
         subject.language_changed?.should be_false
       end
 
+      it "is not dirty if you set the default attribute value to the same value" do
+        user = User.create!(:language => :pt, :sex => true, :cool => true)
+        user.status.should == :active
+        user.should_not be_changed
+
+        user.status = :active
+        user.should_not be_changed
+      end
+
+      it "is not dirty if you set the default attribute value to the same value (string)" do
+        user = User.create!(:language => :pt, :sex => true, :cool => true)
+        user.status.should == :active
+        user.should_not be_changed
+
+        user.status = 'active'
+        user.should_not be_changed
+      end
     end
 
   end
