@@ -117,6 +117,7 @@ describe "Symbolize" do
       person.karma.should be_nil
       person.save
       person.read_attribute(:karma).should be_nil
+      person.karma_text.should be_nil
     end
 
     it "should acts nice with blank" do
@@ -124,6 +125,7 @@ describe "Symbolize" do
       person.so.should be_blank
       person.save
       person.read_attribute(:so).should be_blank
+      person.so_text.should be_nil
     end
 
     it "should not validates other" do

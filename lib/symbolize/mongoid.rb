@@ -137,7 +137,7 @@ module Mongoid
           if i18n # memoize call to translate... good idea?
             define_method "#{attr_name}_text" do
               attr = read_attribute(attr_name)
-              return nil if attr.nil?
+              return nil if attr.nil? || attr.to_s.strip.length == 0
               I18n.t("mongoid.symbolizes.#{self.class.model_name.to_s.underscore}.#{attr_name}.#{attr}")
             end
           elsif enum
