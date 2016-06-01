@@ -15,6 +15,7 @@ class User < ActiveRecord::Base
   },             :scopes => true
   symbolize :gui, :allow_blank => true, :in => [:cocoa, :qt, :gtk], :i18n => false
   symbolize :karma, :in => %w(good bad ugly), :methods => true, :i18n => false, :allow_nil => true
+  symbolize :city, :in => %w(sf nyc), :case_insensitive_methods => true, :i18n => false, :allow_nil => true
   symbolize :cool, :in => [true, false], :scopes => true
 
   symbolize :role, :in => [:reader, :writer, :some_existing_attr], :i18n => false, :methods => true, :default => :reader
@@ -315,6 +316,15 @@ describe 'Symbolize' do
         expect(subject).not_to be_bad
       end
 
+    end
+
+    describe 'Case Insensitive Methods' do
+      it 'provides case insensitive boolean methods' do
+        expect(subject).to respond_to(:sf?)
+        expect(subject).to respond_to(:SF?)
+        expect(subject).to respond_to(:nyc?)
+        expect(subject).to respond_to(:NYC?)
+      end
     end
 
     describe 'Changes' do
