@@ -56,16 +56,17 @@ module Symbolize
 
       def symbolize(*attr_names)
         configuration = attr_names.extract_options!
-        configuration.assert_valid_keys(:in, :within, :i18n, :scopes, :methods, :capitalize, :validate, :default, :allow_blank, :allow_nil)
+        configuration.assert_valid_keys(:in, :within, :i18n, :scopes, :methods, :case_insensitive_methods, :capitalize, :validate, :default, :allow_blank, :allow_nil)
 
-        enum           = configuration[:in] || configuration[:within]
-        i18n           = configuration[:i18n]
-        i18n           = enum && !enum.is_a?(Hash) if i18n.nil?
-        scopes         = configuration[:scopes]
-        methods        = configuration[:methods]
-        capitalize     = configuration[:capitalize]
-        validation     = configuration[:validate] != false
-        default_option = configuration[:default]
+        enum                     = configuration[:in] || configuration[:within]
+        i18n                     = configuration[:i18n]
+        i18n                     = enum && !enum.is_a?(Hash) if i18n.nil?
+        scopes                   = configuration[:scopes]
+        methods                  = configuration[:methods]
+        case_insensitive_methods = configuration[:case_insensitive_methods]
+        capitalize               = configuration[:capitalize]
+        validation               = configuration[:validate] != false
+        default_option           = configuration[:default]
 
         attr_names.each do |attr_name|
           attr_name_str = attr_name.to_s
@@ -115,6 +116,24 @@ module Symbolize
                 define_method("#{key}?") do
                   send(attr_name_str) == key.to_sym
                 end
+              end
+            end
+
+            if case_insensitive_methods
+              enum_hash.each_key do |key|
+                # It's a good idea to test for name collisions here and raise exceptions.
+                # However, the existing software with this kind of errors will start crashing,
+                # so I'd postpone this improvement until the next major version
+                # this way it will not affect those people who use ~> in their Gemfiles
+
+                # raise ArgumentError, "re-defined #{key.downcase}? method of #{self.name} class due to 'symbolize'" if method_defined?("#{key.downcase}?")
+                # raise ArgumentError, "re-defined #{key.upcase}? method of #{self.name} class due to 'symbolize'" if method_defined?("#{key.upcase}?")
+
+                define_method("#{key.downcase}?") do
+                  send(attr_name_str) == key.to_sym
+                end
+
+                alias_method "#{key.upcase}?", "#{key.downcase}?"
               end
             end
 

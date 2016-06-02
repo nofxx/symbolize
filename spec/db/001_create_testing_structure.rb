@@ -5,6 +5,7 @@ class CreateTestingStructure < ActiveRecord::Migration
       t.string :status, :default => :active
       t.string :limited, :limit => 10
       t.string :karma, :limit => 5
+      t.string :city, :limit => 2
       t.boolean :sex
       t.boolean :public
       t.boolean :cool

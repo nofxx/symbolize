@@ -117,6 +117,17 @@ In our User example, browser has this option, so you can do:
     @user.firefox?
     @user.opera?
 
+case insensitive methods
+--------------------
+
+If you provide the case_insensitive_methods option, some fancy boolean methods will be added:
+In our User example, browser has this option, so you can do:
+
+    @user.firefox?
+    @user.FIREFOX?
+    @user.opera?
+    @user.OPERA?
+
 
 Booleans
 --------
