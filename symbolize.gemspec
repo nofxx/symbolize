@@ -18,8 +18,8 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
 
   s.add_dependency 'i18n'
-  s.add_dependency 'activemodel', '>= 3.2', '< 5'
-  s.add_dependency 'activesupport', '>= 3.2', '< 5'
+  s.add_dependency 'activemodel', '>= 3.2'
+  s.add_dependency 'activesupport', '>= 3.2'
 
   # s.add_development_dependency 'pg'
   # s.add_development_dependency 'sqlite3'
